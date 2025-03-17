@@ -9,8 +9,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/v1/users")
@@ -39,8 +42,10 @@ public class UserController {
                 new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword())
         );
 
-        UserDetails userDetails = userService.loadUserByUsername(loginRequest.getUsername());
-        String token = jwtUtil.generateToken(userDetails.getUsername());
+        User user = userService.loadUserByUsername(loginRequest.getUsername())
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
+        String token = jwtUtil.generateToken(user.getUsername());
 
         return ResponseEntity.ok(new AuthenticationResponse(token));
     }

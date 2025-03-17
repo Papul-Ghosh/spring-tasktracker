@@ -10,6 +10,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -24,11 +25,9 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
-    private final UserDetailsService userDetailsService;
 
-    public SecurityConfig(@Lazy JwtAuthenticationFilter jwtAuthenticationFilter, UserDetailsService userDetailsService) {
+    public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter) {
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
-        this.userDetailsService = userDetailsService;
     }
 
     @Bean
@@ -44,7 +43,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-        .csrf(csrf -> csrf.disable())
+        .csrf(AbstractHttpConfigurer::disable)
         .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))  // Stateless JWT auth
         .authorizeHttpRequests(auth -> auth
         .requestMatchers("/v1/users/signup").permitAll()  // Allow registration
@@ -64,6 +63,11 @@ public class SecurityConfig {
                         .roles(user.getRoles().toArray(new String[0]))
                         .build())
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+    }
+
+    @Bean
+    public JwtAuthenticationFilter jwtAuthenticationFilter(JwtUtil jwtUtil, UserDetailsService userDetailsService) {
+        return new JwtAuthenticationFilter(jwtUtil, userDetailsService);
     }
 
 }

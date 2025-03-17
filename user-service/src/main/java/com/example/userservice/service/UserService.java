@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 
 @Service
-public class UserService implements UserDetailsService {
+public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
@@ -25,14 +25,7 @@ public class UserService implements UserDetailsService {
         return userRepository.save(user);
     }
 
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Optional<User> user = userRepository.findByUsername(username);
-        return user.map(u -> org.springframework.security.core.userdetails.User
-                        .withUsername(u.getUsername())
-                        .password(u.getPassword())
-                        .roles(u.getRoles().toArray(new String[0]))
-                        .build())
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+    public Optional<User> loadUserByUsername(String username) {
+        return userRepository.findByUsername(username);
     }
 }
