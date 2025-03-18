@@ -20,33 +20,18 @@ import java.util.Optional;
 public class UserController {
 
     private final UserService userService;
-    private final AuthenticationManager authenticationManager;
-    private final JwtUtil jwtUtil;
-    private final PasswordEncoder passwordEncoder;
 
-    public UserController(UserService userService, AuthenticationManager authenticationManager, JwtUtil jwtUtil, PasswordEncoder passwordEncoder) {
+    public UserController(UserService userService) {
         this.userService = userService;
-        this.authenticationManager = authenticationManager;
-        this.jwtUtil = jwtUtil;
-        this.passwordEncoder = passwordEncoder;
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<User> registerUser(@RequestBody User user) {
-        return ResponseEntity.ok(userService.registerUser(user));
+    public String registerUser(@RequestBody User user) {
+        return userService.registerUser(user);
     }
 
     @PostMapping("/login")
-    public ResponseEntity<AuthenticationResponse> login(@RequestBody LoginRequest loginRequest) {
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword())
-        );
-
-        User user = userService.loadUserByUsername(loginRequest.getUsername())
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-
-        String token = jwtUtil.generateToken(user.getUsername());
-
-        return ResponseEntity.ok(new AuthenticationResponse(token));
+    public String login(@RequestParam String username, @RequestParam String password) {
+        return userService.login(username, password);
     }
 }
