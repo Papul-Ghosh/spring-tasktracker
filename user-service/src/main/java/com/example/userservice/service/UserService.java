@@ -33,8 +33,8 @@ public class UserService {
         return "User registered successfully!";
     }
 
-    public String login(String username, String password) {
-        Optional<User> user = userRepository.findByUsername(username);
+    public String login(String email, String password) {
+        Optional<User> user = userRepository.findByEmail(email);
         if (user.isPresent() && passwordEncoder.matches(password, user.get().getPassword())) {
 //            return jwtUtil.generateToken(username);
             return "Success";

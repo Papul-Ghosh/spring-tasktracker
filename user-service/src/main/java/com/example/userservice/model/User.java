@@ -15,8 +15,11 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true)
-    private String username;
+    @Column(nullable = false)
+    private String firstname;
+
+    @Column(nullable = false)
+    private String lastname;
 
     @Column(nullable = false, unique = true)
     private String email;
@@ -32,12 +35,20 @@ public class User {
         return id;
     }
 
-    public String getUsername() {
-        return username;
+    public String getFirstname() {
+        return firstname;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public String getLastname() {
+        return lastname;
+    }
+
+    public void setFirstname(String fname) {
+        this.firstname = fname;
+    }
+
+    public void setLastname(String lname) {
+        this.lastname = lname;
     }
 
     public Set<Role> getRoles() {
