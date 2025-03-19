@@ -36,7 +36,8 @@ public class UserService {
     public String login(String username, String password) {
         Optional<User> user = userRepository.findByUsername(username);
         if (user.isPresent() && passwordEncoder.matches(password, user.get().getPassword())) {
-            return jwtUtil.generateToken(username);
+//            return jwtUtil.generateToken(username);
+            return "Success";
         }
         return "Invalid credentials!";
     }
