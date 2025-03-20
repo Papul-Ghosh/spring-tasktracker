@@ -20,7 +20,6 @@ public class User {
     @Column(nullable = false)
     private String firstname;
 
-    @Column(nullable = false)
     private String lastname;
 
     @Column(nullable = false, unique = true)
@@ -72,5 +71,11 @@ public class User {
         this.password = password;
     }
 
+    public List<Role> getRoles() {
+        return roles;
+    }
 
+    public void setRoles(List<Role> roles) {
+        this.roles = roles;
+    }
 }

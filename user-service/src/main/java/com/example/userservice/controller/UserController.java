@@ -1,19 +1,9 @@
 package com.example.userservice.controller;
 
-import com.example.userservice.dto.AuthenticationResponse;
-import com.example.userservice.model.User;
-import com.example.userservice.security.JwtUtil;
+import com.example.userservice.dto.SignupDto;
 import com.example.userservice.service.UserService;
-import com.example.userservice.dto.LoginRequest;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import com.example.userservice.dto.LoginDto;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/v1/users")
@@ -26,12 +16,13 @@ public class UserController {
     }
 
     @PostMapping("/signup")
-    public String registerUser(@RequestBody User user) {
-        return userService.registerUser(user);
+    public String registerUser(@RequestBody SignupDto signupDto) {
+
+        return userService.registerUser(signupDto);
     }
 
     @PostMapping("/login")
-    public String login(@RequestBody LoginRequest loginRequest) {
-        return userService.login(loginRequest.getEmail(), loginRequest.getPassword());
+    public String login(@RequestBody LoginDto loginDto) {
+        return userService.login(loginDto);
     }
 }

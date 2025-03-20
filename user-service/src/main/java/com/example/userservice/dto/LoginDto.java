@@ -1,6 +1,6 @@
 package com.example.userservice.dto;
 
-public class LoginRequest {
+public class LoginDto {
     private String email;
     private String password;
 

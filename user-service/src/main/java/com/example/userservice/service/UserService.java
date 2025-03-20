@@ -1,6 +1,10 @@
 package com.example.userservice.service;
 
+import com.example.userservice.dto.LoginDto;
+import com.example.userservice.dto.SignupDto;
+import com.example.userservice.model.Role;
 import com.example.userservice.model.User;
+import com.example.userservice.repository.RoleRepository;
 import com.example.userservice.repository.UserRepository;
 import com.example.userservice.security.JwtUtil;
 import org.springframework.http.HttpStatus;
@@ -14,23 +18,38 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.Arrays;
 import java.util.Optional;
 
 @Service
 public class UserService {
 
     private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
 
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder,
-                       JwtUtil jwtUtil) {
+    public UserService(UserRepository userRepository, RoleRepository roleRepository,
+                       PasswordEncoder passwordEncoder, JwtUtil jwtUtil) {
         this.userRepository = userRepository;
+        this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtUtil = jwtUtil;
     }
 
-    public String registerUser(User user) {
+    public String registerUser(SignupDto signupDto) {
+        User user = new User();
+        user.setFirstname(signupDto.getfirstname());
+        user.setLastname(signupDto.getlastname());
+        user.setEmail(signupDto.getEmail());
+        user.setPassword(passwordEncoder.encode(signupDto.getPassword()));
+
+        Role role = roleRepository.findByName("ROLE_ADMIN");
+        if(role == null){
+            role = checkRoleExist();
+        }
+        user.setRoles(Arrays.asList(role));
+
         if (userRepository.existsByEmail(user.getEmail())) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Email already exists");
         }
@@ -39,12 +58,18 @@ public class UserService {
         return "User registered successfully!";
     }
 
-    public String login(String email, String password) {
-        Optional<User> user = userRepository.findByEmail(email);
-        if (user.isPresent() && passwordEncoder.matches(password, user.get().getPassword())) {
+    public String login(LoginDto loginDto) {
+        Optional<User> user = userRepository.findByEmail(loginDto.getEmail());
+        if (user.isPresent() && passwordEncoder.matches(loginDto.getPassword(), user.get().getPassword())) {
 //            return jwtUtil.generateToken(username);
             return "Success";
         }
         return "Invalid credentials!";
+    }
+
+    private Role checkRoleExist(){
+        Role role = new Role();
+        role.setName("ROLE_ADMIN");
+        return roleRepository.save(role);
     }
 }
