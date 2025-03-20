@@ -4,6 +4,7 @@ import com.example.userservice.dto.SignupDto;
 import com.example.userservice.service.UserService;
 import com.example.userservice.dto.LoginDto;
 import org.springframework.web.bind.annotation.*;
+import java.util.List;
 
 @RestController
 @RequestMapping("/v1/users")
@@ -13,6 +14,11 @@ public class UserController {
 
     public UserController(UserService userService) {
         this.userService = userService;
+    }
+
+    @GetMapping("/")
+    public List<SignupDto> getAllUsers(){
+        return userService.findAllUsers();
     }
 
     @PostMapping("/signup")

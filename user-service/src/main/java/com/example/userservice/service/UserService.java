@@ -17,9 +17,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
-
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService {
@@ -39,8 +40,8 @@ public class UserService {
 
     public String registerUser(SignupDto signupDto) {
         User user = new User();
-        user.setFirstname(signupDto.getfirstname());
-        user.setLastname(signupDto.getlastname());
+        user.setFirstname(signupDto.getFirstname());
+        user.setLastname(signupDto.getLastname());
         user.setEmail(signupDto.getEmail());
         user.setPassword(passwordEncoder.encode(signupDto.getPassword()));
 
@@ -71,5 +72,20 @@ public class UserService {
         Role role = new Role();
         role.setName("ROLE_ADMIN");
         return roleRepository.save(role);
+    }
+
+    public List<SignupDto> findAllUsers() {
+        List<User> users = userRepository.findAll();
+        return users.stream()
+                .map(this::mapToUserDto)
+                .collect(Collectors.toList());
+    }
+
+    private SignupDto mapToUserDto(User user){
+        SignupDto userDto = new SignupDto();
+        userDto.setFirstname(user.getFirstname());
+        userDto.setLastname(user.getLastname());
+        userDto.setEmail(user.getEmail());
+        return userDto;
     }
 }

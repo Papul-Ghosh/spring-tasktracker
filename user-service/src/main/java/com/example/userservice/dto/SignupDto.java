@@ -20,19 +20,19 @@ public class SignupDto
     @NotEmpty(message = "Password should not be empty")
     private String password;
 
-    public String getfirstname() {
+    public String getFirstname() {
         return firstname;
     }
 
-    public void setfirstname (String firstname) {
+    public void setFirstname (String firstname) {
         this.firstname = firstname;
     }
 
-    public String getlastname() {
+    public String getLastname() {
         return lastname;
     }
 
-    public void setlastname(String lastname) {
+    public void setLastname(String lastname) {
         this.lastname = lastname;
     }
 
