@@ -39,12 +39,7 @@ public class UserService {
     }
 
     public String registerUser(SignupDto signupDto) {
-        User user = new User();
-        user.setFirstname(signupDto.getFirstname());
-        user.setLastname(signupDto.getLastname());
-        user.setEmail(signupDto.getEmail());
-        user.setPassword(passwordEncoder.encode(signupDto.getPassword()));
-
+        User user = mapToUser(signupDto);
         Role role = roleRepository.findByName("ROLE_ADMIN");
         if(role == null){
             role = checkRoleExist();
@@ -62,8 +57,8 @@ public class UserService {
     public String login(LoginDto loginDto) {
         Optional<User> user = userRepository.findByEmail(loginDto.getEmail());
         if (user.isPresent() && passwordEncoder.matches(loginDto.getPassword(), user.get().getPassword())) {
-//            return jwtUtil.generateToken(username);
-            return "Success";
+            return jwtUtil.generateToken(user.get().getEmail());
+//            return "Success";
         }
         return "Invalid credentials!";
     }
@@ -87,5 +82,13 @@ public class UserService {
         userDto.setLastname(user.getLastname());
         userDto.setEmail(user.getEmail());
         return userDto;
+    }
+    private User mapToUser(SignupDto signupDto){
+        User user = new User();
+        user.setFirstname(signupDto.getFirstname());
+        user.setLastname(signupDto.getLastname());
+        user.setEmail(signupDto.getEmail());
+        user.setPassword(passwordEncoder.encode(signupDto.getPassword()));
+        return user;
     }
 }
