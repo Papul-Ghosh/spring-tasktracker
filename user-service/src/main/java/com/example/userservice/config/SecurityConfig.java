@@ -70,7 +70,7 @@ public class SecurityConfig {
                                 )
                                 .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)))
                 .logout(l->l
-                        .logoutUrl("/logout")
+                        .logoutUrl("/v1/users/logout/")
                         .addLogoutHandler(logoutHandler)
                         .logoutSuccessHandler((request, response, authentication) -> SecurityContextHolder.clearContext()
                         ))
