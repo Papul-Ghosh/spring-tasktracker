@@ -1,11 +1,12 @@
 package com.example.userservice.controller;
 
+import com.example.userservice.dto.LoginDto;
 import com.example.userservice.dto.SignupDto;
 import com.example.userservice.model.AuthenticationResponse;
 import com.example.userservice.service.UserService;
-import com.example.userservice.dto.LoginDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
 @RestController

@@ -2,13 +2,18 @@ package com.example.userservice.service;
 
 import com.example.userservice.dto.LoginDto;
 import com.example.userservice.dto.SignupDto;
+import com.example.userservice.model.AuthenticationResponse;
 import com.example.userservice.model.Role;
 import com.example.userservice.model.Token;
 import com.example.userservice.model.User;
 import com.example.userservice.repository.RoleRepository;
 import com.example.userservice.repository.TokenRepository;
 import com.example.userservice.repository.UserRepository;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -17,13 +22,6 @@ import org.springframework.stereotype.Service;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import com.example.userservice.model.AuthenticationResponse;
-
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.ResponseEntity;
 
 @Service
 public class UserService {
