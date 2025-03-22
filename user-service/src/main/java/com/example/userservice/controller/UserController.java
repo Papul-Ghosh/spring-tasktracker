@@ -1,8 +1,10 @@
 package com.example.userservice.controller;
 
 import com.example.userservice.dto.SignupDto;
+import com.example.userservice.model.AuthenticationResponse;
 import com.example.userservice.service.UserService;
 import com.example.userservice.dto.LoginDto;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
@@ -22,13 +24,13 @@ public class UserController {
     }
 
     @PostMapping("/signup")
-    public String registerUser(@RequestBody SignupDto signupDto) {
+    public ResponseEntity<AuthenticationResponse> registerUser(@RequestBody SignupDto signupDto) {
 
-        return userService.registerUser(signupDto);
+        return ResponseEntity.ok(userService.registerUser(signupDto));
     }
 
     @PostMapping("/login")
-    public String login(@RequestBody LoginDto loginDto) {
-        return userService.login(loginDto);
+    public ResponseEntity<AuthenticationResponse> login(@RequestBody LoginDto loginDto) {
+        return ResponseEntity.ok(userService.login(loginDto));
     }
 }
