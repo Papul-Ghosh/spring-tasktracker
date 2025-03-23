@@ -18,5 +18,4 @@ where t.user.id = :userId and t.loggedOut = false
 
     Optional<Token> findByAccessToken(String token);
 
-    Optional<Token > findByRefreshToken(String token);
 }
