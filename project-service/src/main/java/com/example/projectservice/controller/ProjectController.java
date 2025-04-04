@@ -1,0 +1,68 @@
+package com.example.projectservice.controller;
+
+import com.example.projectservice.dto.ProjectDto;
+import com.example.projectservice.model.Project;
+import com.example.projectservice.repository.ProjectRepository;
+import com.example.projectservice.service.ProjectService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
+
+import java.util.List;
+import java.util.Optional;
+
+@RestController
+@RequestMapping("/v1/projects")
+class ProjectController {
+
+//    @Autowired
+    private final ProjectService projectService;
+
+    public ProjectController(ProjectService projectService) {
+        this.projectService = projectService;
+    }
+
+    @PostMapping("/create")
+    public ResponseEntity createProject(@RequestBody ProjectDto projectDto) {
+        System.out.println("I am here............................................");
+        try {
+            Project createdProject = projectService.createProject(projectDto);
+            return ResponseEntity.status(HttpStatus.CREATED).body(createdProject);
+        } catch (ResponseStatusException ex) {
+            return ResponseEntity.status(ex.getStatusCode()).body(ex.getMessage());
+        }
+    }
+
+//    @GetMapping("/{id}")
+//    public ResponseEntity<Project> getProject(@PathVariable Long id) {
+//        Optional<Project> project = projectRepository.findById(id);
+//        return project.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+//    }
+//
+//    @GetMapping
+//    public List<Project> getAllProjects() {
+//        return projectRepository.findAll();
+//    }
+//
+//    @PutMapping("/{id}")
+//    public ResponseEntity<Project> updateProject(@PathVariable Long id, @RequestBody Project updatedProject) {
+//        return projectRepository.findById(id).map(project -> {
+//            project.setName(updatedProject.getName());
+//            project.setDescription(updatedProject.getDescription());
+//            project.setStartDate(updatedProject.getStartDate());
+//            project.setEndDate(updatedProject.getEndDate());
+//            return ResponseEntity.ok(projectRepository.save(project));
+//        }).orElseGet(() -> ResponseEntity.notFound().build());
+//    }
+//
+//    @DeleteMapping("/{id}")
+//    public ResponseEntity<Void> deleteProject(@PathVariable Long id) {
+//        if (projectRepository.existsById(id)) {
+//            projectRepository.deleteById(id);
+//            return ResponseEntity.noContent().build();
+//        }
+//        return ResponseEntity.notFound().build();
+//    }
+}
