@@ -3,6 +3,8 @@ package com.example.userservice.controller;
 import com.example.userservice.dto.LoginDto;
 import com.example.userservice.dto.SignupDto;
 import com.example.userservice.model.AuthenticationResponse;
+import com.example.userservice.model.Token;
+import com.example.userservice.model.User;
 import com.example.userservice.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -33,5 +35,10 @@ public class UserController {
     @PostMapping("/login")
     public ResponseEntity<AuthenticationResponse> login(@RequestBody LoginDto loginDto) {
         return ResponseEntity.ok(userService.login(loginDto));
+    }
+
+    @GetMapping("/activeUser")
+    public ResponseEntity<User> getActiveUser() {
+        return ResponseEntity.ok(userService.activeUser());
     }
 }

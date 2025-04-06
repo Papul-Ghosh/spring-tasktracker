@@ -3,8 +3,11 @@ package com.example.projectservice.service;
 import com.example.projectservice.dto.ProjectDto;
 import com.example.projectservice.model.Project;
 import com.example.projectservice.repository.ProjectRepository;
+import com.example.userservice.model.User;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
@@ -14,9 +17,15 @@ import java.time.format.DateTimeFormatter;
 public class ProjectService {
 
     private final ProjectRepository projectRepository;
+    private final RestTemplate restTemplate;
+    private final String activeUserUrl;
 
-    public ProjectService(ProjectRepository projectRepository) {
+    public ProjectService(ProjectRepository projectRepository,
+                          RestTemplate restTemplate,
+                          @Value("${user.activeUser.url}") String activeUserUrl) {
         this.projectRepository = projectRepository;
+        this.restTemplate = restTemplate;
+        this.activeUserUrl = activeUserUrl;
     }
 
 
@@ -26,6 +35,10 @@ public class ProjectService {
         }
         Project newProject = mapProjectDtoToProject(projectDto);
         return projectRepository.save(newProject);
+    }
+
+    public User getActiveUser() {
+        return restTemplate.getForObject(activeUserUrl, User.class);
     }
 
     private Project mapProjectDtoToProject(ProjectDto projectDto) {

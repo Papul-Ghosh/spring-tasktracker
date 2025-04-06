@@ -18,6 +18,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Arrays;
 import java.util.List;
@@ -131,6 +132,15 @@ public class UserService {
         });
 
         tokenRepository.saveAll(validTokens);
+    }
+
+
+    public User activeUser(){
+        List<Token> activeTokens = tokenRepository.findByLoggedOut(false);
+        if(activeTokens.size()!= 1) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Multiple user logged in");
+        }
+        return activeTokens.getFirst().getUser();
     }
 
 
