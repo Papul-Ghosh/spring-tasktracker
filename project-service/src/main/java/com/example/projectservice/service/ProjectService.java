@@ -1,13 +1,11 @@
 package com.example.projectservice.service;
 
+import com.example.projectservice.client.UserClient;
 import com.example.projectservice.dto.ProjectDto;
 import com.example.projectservice.model.Project;
 import com.example.projectservice.repository.ProjectRepository;
-import com.example.userservice.model.User;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
@@ -17,15 +15,12 @@ import java.time.format.DateTimeFormatter;
 public class ProjectService {
 
     private final ProjectRepository projectRepository;
-    private final RestTemplate restTemplate;
-    private final String activeUserUrl;
+    private final UserClient userClient;
 
     public ProjectService(ProjectRepository projectRepository,
-                          RestTemplate restTemplate,
-                          @Value("${user.activeUser.url}") String activeUserUrl) {
+                          UserClient userClient) {
         this.projectRepository = projectRepository;
-        this.restTemplate = restTemplate;
-        this.activeUserUrl = activeUserUrl;
+        this.userClient = userClient;
     }
 
 
@@ -37,8 +32,8 @@ public class ProjectService {
         return projectRepository.save(newProject);
     }
 
-    public User getActiveUser() {
-        return restTemplate.getForObject(activeUserUrl, User.class);
+    public String getActiveUser() {
+        return userClient.getUserFromUserService();
     }
 
     private Project mapProjectDtoToProject(ProjectDto projectDto) {

@@ -38,7 +38,7 @@ public class UserController {
     }
 
     @GetMapping("/activeUser")
-    public ResponseEntity<User> getActiveUser() {
+    public ResponseEntity<String> getActiveUser() {
         return ResponseEntity.ok(userService.activeUser());
     }
 }

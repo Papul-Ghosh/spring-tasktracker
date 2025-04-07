@@ -135,12 +135,13 @@ public class UserService {
     }
 
 
-    public User activeUser(){
+    public String activeUser(){
         List<Token> activeTokens = tokenRepository.findByLoggedOut(false);
         if(activeTokens.size()!= 1) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Multiple user logged in");
         }
-        return activeTokens.getFirst().getUser();
+//        return mapToUserDto(activeTokens.getFirst().getUser());
+        return activeTokens.getFirst().getUser().getEmail();
     }
 
 

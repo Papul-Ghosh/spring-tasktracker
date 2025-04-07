@@ -2,18 +2,11 @@ package com.example.projectservice.controller;
 
 import com.example.projectservice.dto.ProjectDto;
 import com.example.projectservice.model.Project;
-import com.example.projectservice.repository.ProjectRepository;
 import com.example.projectservice.service.ProjectService;
-import com.example.userservice.model.AuthenticationResponse;
-import com.example.userservice.model.User;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
-
-import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/v1/projects")
@@ -38,7 +31,7 @@ class ProjectController {
     }
 
     @GetMapping("/getActiveUser")
-    public ResponseEntity<User> getActiveUser() {
+    public ResponseEntity<String> getActiveUser() {
         return ResponseEntity.ok(projectService.getActiveUser());
     }
 
