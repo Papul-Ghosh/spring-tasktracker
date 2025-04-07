@@ -6,7 +6,7 @@
 		<groupId>com.example</groupId>
 		<artifactId>base-domains</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
-		<relativePath>../base-domains</relativePath><!-- lookup parent from repository -->
+		<relativePath>../base-domains/pom.xml</relativePath><!-- lookup parent from repository -->
 	</parent>
 	<artifactId>user-service</artifactId>
 	<version>0.0.1-SNAPSHOT</version>

@@ -46,7 +46,7 @@ public class UserService {
 //        if(role == null){
 //
 //        }
-        user.setRoles(new HashSet<>(List.of(Role.ADMIN, Role.USER)));
+        user.setRole(Role.ADMIN);
 
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user = userRepository.save(user);
@@ -121,13 +121,12 @@ public class UserService {
     }
 
 
-    public String activeUser(){
+    public User activeUser(){
         List<Token> activeTokens = tokenRepository.findByLoggedOut(false);
         if(activeTokens.size()!= 1) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Multiple user logged in");
         }
-//        return mapToUserDto(activeTokens.getFirst().getUser());
-        return activeTokens.getFirst().getUser().getEmail();
+        return activeTokens.getFirst().getUser();
     }
 
 

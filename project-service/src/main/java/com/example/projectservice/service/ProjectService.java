@@ -2,6 +2,7 @@ package com.example.projectservice.service;
 
 import com.example.projectservice.client.UserClient;
 import com.example.projectservice.dto.ProjectDto;
+import com.example.projectservice.dto.UserDto;
 import com.example.projectservice.model.Project;
 import com.example.projectservice.repository.ProjectRepository;
 import org.springframework.http.HttpStatus;
@@ -32,7 +33,7 @@ public class ProjectService {
         return projectRepository.save(newProject);
     }
 
-    public String getActiveUser() {
+    public UserDto getActiveUser() {
         return userClient.getUserFromUserService();
     }
 

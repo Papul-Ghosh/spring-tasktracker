@@ -1,6 +1,7 @@
 package com.example.projectservice.controller;
 
 import com.example.projectservice.dto.ProjectDto;
+import com.example.projectservice.dto.UserDto;
 import com.example.projectservice.model.Project;
 import com.example.projectservice.service.ProjectService;
 import org.springframework.http.HttpStatus;
@@ -31,7 +32,7 @@ class ProjectController {
     }
 
     @GetMapping("/getActiveUser")
-    public ResponseEntity<String> getActiveUser() {
+    public ResponseEntity<UserDto> getActiveUser() {
         return ResponseEntity.ok(projectService.getActiveUser());
     }
 

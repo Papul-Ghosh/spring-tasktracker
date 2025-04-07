@@ -29,8 +29,8 @@ public class User {
     private String password;
 
     @Enumerated(EnumType.STRING)
-    @ElementCollection(fetch = FetchType.EAGER)
-    private Set<Role> roles;
+//    @ElementCollection(fetch = FetchType.EAGER)
+    private Role role;
 
 //    @ManyToMany(fetch = FetchType.EAGER, cascade=CascadeType.ALL)
 //    @JoinTable(
@@ -75,11 +75,11 @@ public class User {
         this.password = password;
     }
 
-    public Set<Role> getRoles() {
-        return roles;
+    public Role getRole() {
+        return role;
     }
 
-    public void setRoles(Set<Role> roles) {
-        this.roles = roles;
+    public void setRole(Role role) {
+        this.role = role;
     }
 }
