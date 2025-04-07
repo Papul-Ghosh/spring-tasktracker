@@ -11,6 +11,7 @@
 	<groupId>com.example</groupId>
 	<artifactId>base-domains</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
+	<packaging>pom</packaging>
 	<name>base-domains</name>
 	<description>Demo project for Spring Boot Base Domains</description>
 	<url/>
@@ -38,7 +39,7 @@
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
-			<optional>true</optional>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
