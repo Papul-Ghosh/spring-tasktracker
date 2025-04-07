@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -27,12 +28,16 @@ public class User {
     @Column(nullable = false)
     private String password;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade=CascadeType.ALL)
-    @JoinTable(
-            name="users_roles",
-            joinColumns={@JoinColumn(name="USER_ID", referencedColumnName="ID")},
-            inverseJoinColumns={@JoinColumn(name="ROLE_ID", referencedColumnName="ID")})
-    private List<Role> roles = new ArrayList<>();
+    @Enumerated(EnumType.STRING)
+    @ElementCollection(fetch = FetchType.EAGER)
+    private Set<Role> roles;
+
+//    @ManyToMany(fetch = FetchType.EAGER, cascade=CascadeType.ALL)
+//    @JoinTable(
+//            name="users_roles",
+//            joinColumns={@JoinColumn(name="USER_ID", referencedColumnName="ID")},
+//            inverseJoinColumns={@JoinColumn(name="ROLE_ID", referencedColumnName="ID")})
+//    private List<Role> roles = new ArrayList<>();
 
     public Long getId() {
         return id;
@@ -70,11 +75,11 @@ public class User {
         this.password = password;
     }
 
-    public List<Role> getRoles() {
+    public Set<Role> getRoles() {
         return roles;
     }
 
-    public void setRoles(List<Role> roles) {
+    public void setRoles(Set<Role> roles) {
         this.roles = roles;
     }
 }

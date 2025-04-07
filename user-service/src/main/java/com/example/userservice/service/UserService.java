@@ -6,39 +6,31 @@ import com.example.userservice.model.AuthenticationResponse;
 import com.example.userservice.model.Role;
 import com.example.userservice.model.Token;
 import com.example.userservice.model.User;
-import com.example.userservice.repository.RoleRepository;
 import com.example.userservice.repository.TokenRepository;
 import com.example.userservice.repository.UserRepository;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
 public class UserService {
 
     private final UserRepository userRepository;
-    private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final TokenRepository tokenRepository;
     private final AuthenticationManager authenticationManager;
 
-    public UserService(UserRepository userRepository, RoleRepository roleRepository,
+    public UserService(UserRepository userRepository,
                        PasswordEncoder passwordEncoder, JwtService jwtService,
                        TokenRepository tokenRepository, AuthenticationManager authenticationManager) {
         this.userRepository = userRepository;
-        this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtService = jwtService;
         this.tokenRepository = tokenRepository;
@@ -50,11 +42,11 @@ public class UserService {
             return new AuthenticationResponse(null,"User already exist");
         }
         User user = mapToUser(signupDto);
-        Role role = roleRepository.findByName("ROLE_ADMIN");
-        if(role == null){
-            role = checkRoleExist();
-        }
-        user.setRoles(Arrays.asList(role));
+
+//        if(role == null){
+//
+//        }
+        user.setRoles(new HashSet<>(List.of(Role.ADMIN, Role.USER)));
 
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user = userRepository.save(user);
@@ -81,12 +73,6 @@ public class UserService {
         saveUserToken(accessToken, user);
 
         return new AuthenticationResponse(accessToken, "User login was successful");
-    }
-
-    private Role checkRoleExist(){
-        Role role = new Role();
-        role.setName("ROLE_ADMIN");
-        return roleRepository.save(role);
     }
 
     public List<SignupDto> findAllUsers() {
