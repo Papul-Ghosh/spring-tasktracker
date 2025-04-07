@@ -22,7 +22,6 @@ class ProjectController {
 
     @PostMapping("/create")
     public ResponseEntity createProject(@RequestBody ProjectDto projectDto) {
-        System.out.println("I am here............................................");
         try {
             Project createdProject = projectService.createProject(projectDto);
             return ResponseEntity.status(HttpStatus.CREATED).body(createdProject);

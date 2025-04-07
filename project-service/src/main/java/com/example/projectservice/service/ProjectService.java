@@ -39,12 +39,13 @@ public class ProjectService {
 
     private Project mapProjectDtoToProject(ProjectDto projectDto) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-        System.out.println(projectDto.getStartDate());
+        UserDto owner = userClient.getUserFromUserService();
         Project project = new Project();
         project.setName(projectDto.getName());
         project.setDescription(projectDto.getDescription());
         project.setStartDate(LocalDate.parse(projectDto.getStartDate(), formatter));
         project.setEndDate(LocalDate.parse(projectDto.getEndDate(), formatter));
+        project.setOwnerid(owner.getId());
         return project;
     }
 

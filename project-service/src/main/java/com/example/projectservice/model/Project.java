@@ -29,10 +29,17 @@ public class Project {
 
     @Column(nullable = false)
     private LocalDate endDate;
-//
-//    @ManyToOne
-//    @JoinColumn(name = "owner_id")
-//    private User owner;
+
+    public Long getOwnerid() {
+        return ownerid;
+    }
+
+    public void setOwnerid(Long ownerid) {
+        this.ownerid = ownerid;
+    }
+
+    @Column(nullable = false)
+    private Long ownerid;
 
     public Long getId() {
         return id;
