@@ -43,10 +43,10 @@ public class UserService {
         }
         User user = mapToUser(signupDto);
 
-//        if(role == null){
-//
-//        }
-        user.setRole(Role.valueOf(signupDto.getRole()));
+        if(signupDto.getRole() == null){
+            user.setRole(Role.DEVELOPER);
+        }
+        else user.setRole(Role.valueOf(signupDto.getRole()));
 
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user = userRepository.save(user);
