@@ -2,10 +2,13 @@ package com.example.projectservice.dto;
 
 import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
-
+import lombok.Setter;
 import java.time.LocalDate;
 
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class ProjectDto {
@@ -20,36 +23,4 @@ public class ProjectDto {
 
     @NotEmpty(message = "project end date cannot be empty")
     private String endDate;
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public String getStartDate() {
-        return startDate;
-    }
-
-    public void setStartDate(String startDate) {
-        this.startDate = startDate;
-    }
-
-    public String getEndDate() {
-        return endDate;
-    }
-
-    public void setEndDate(String endDate) {
-        this.endDate = endDate;
-    }
 }

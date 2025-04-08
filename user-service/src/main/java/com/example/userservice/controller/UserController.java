@@ -3,7 +3,6 @@ package com.example.userservice.controller;
 import com.example.userservice.dto.LoginDto;
 import com.example.userservice.dto.SignupDto;
 import com.example.userservice.model.AuthenticationResponse;
-import com.example.userservice.model.Token;
 import com.example.userservice.model.User;
 import com.example.userservice.service.UserService;
 import org.springframework.http.HttpStatus;
@@ -40,7 +39,7 @@ public class UserController {
     }
 
     @GetMapping("/activeUser")
-    public ResponseEntity getActiveUser() {
+    public ResponseEntity<?> getActiveUser() {
         try{
             User user = userService.activeUser();
             return ResponseEntity.status(HttpStatus.OK).body(user);

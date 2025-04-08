@@ -1,7 +1,11 @@
 package com.example.userservice.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
+@Setter
 public class AuthenticationResponse {
     @JsonProperty("access_token")
     private String accessToken;
@@ -12,13 +16,5 @@ public class AuthenticationResponse {
     public AuthenticationResponse(String accessToken, String message) {
         this.accessToken = accessToken;
         this.message = message;
-    }
-
-    public String getAccessToken() {
-        return accessToken;
-    }
-
-    public String getMessage() {
-        return message;
     }
 }

@@ -113,9 +113,7 @@ public class UserService {
             return;
         }
 
-        validTokens.forEach(t-> {
-            t.setLoggedOut(true);
-        });
+        validTokens.forEach(t-> t.setLoggedOut(true));
 
         tokenRepository.saveAll(validTokens);
     }
