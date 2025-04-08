@@ -69,7 +69,7 @@ public class UserService {
 
         String accessToken = jwtService.generateAccessToken(user);
 
-        revokeAllTokenByUser(user);
+        revokeAllToken();
         saveUserToken(accessToken, user);
 
         return new AuthenticationResponse(accessToken, "User login was successful");
@@ -107,8 +107,8 @@ public class UserService {
         tokenRepository.save(token);
     }
 
-    private void revokeAllTokenByUser(User user) {
-        List<Token> validTokens = tokenRepository.findAllAccessTokensByUser(user.getId());
+    private void revokeAllToken() {
+        List<Token> validTokens = tokenRepository.findAll();
         if(validTokens.isEmpty()) {
             return;
         }
