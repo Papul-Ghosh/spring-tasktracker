@@ -6,8 +6,10 @@ import com.example.userservice.model.AuthenticationResponse;
 import com.example.userservice.model.Token;
 import com.example.userservice.model.User;
 import com.example.userservice.service.UserService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -38,7 +40,13 @@ public class UserController {
     }
 
     @GetMapping("/activeUser")
-    public ResponseEntity<User> getActiveUser() {
-        return ResponseEntity.ok(userService.activeUser());
+    public ResponseEntity getActiveUser() {
+        try{
+            User user = userService.activeUser();
+            return ResponseEntity.status(HttpStatus.OK).body(user);
+        }
+        catch (ResponseStatusException ex){
+            return ResponseEntity.status(ex.getStatusCode()).body(ex.getMessage());
+        }
     }
 }

@@ -19,6 +19,16 @@ public class SignupDto
 
     @NotEmpty(message = "Password should not be empty")
     private String password;
+    @NotEmpty(message = "Role should not be empty")
+    private String role;
+
+    public @NotEmpty(message = "Role should not be empty") String getRole() {
+        return role;
+    }
+
+    public void setRole(@NotEmpty(message = "Role should not be empty") String role) {
+        this.role = role;
+    }
 
     public String getFirstname() {
         return firstname;
