@@ -73,15 +73,13 @@ public class JwtService {
     }
 
     private String generateToken(User user, long expireTime) {
-        String token = Jwts
+        return Jwts
                 .builder()
                 .subject(user.getEmail())
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis() + expireTime ))
                 .signWith(getSigninKey())
                 .compact();
-
-        return token;
     }
 
     private SecretKey getSigninKey() {

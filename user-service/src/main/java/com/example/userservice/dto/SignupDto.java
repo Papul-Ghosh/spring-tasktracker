@@ -25,11 +25,4 @@ public class SignupDto
     private String password;
     private String role;
 
-    public @NotEmpty(message = "Role should not be empty") String getRole() {
-        return role;
-    }
-
-    public void setRole(@NotEmpty(message = "Role should not be empty") String role) {
-        this.role = role;
-    }
 }
