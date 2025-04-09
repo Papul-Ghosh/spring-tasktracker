@@ -4,10 +4,13 @@ import com.example.projectservice.dto.ProjectDto;
 import com.example.projectservice.dto.UserDto;
 import com.example.projectservice.model.Project;
 import com.example.projectservice.service.ProjectService;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/v1/projects")
@@ -35,17 +38,17 @@ class ProjectController {
         return ResponseEntity.ok(projectService.getActiveUser());
     }
 
+    @GetMapping("/")
+    public List<Project> getAllProjects() {
+        return projectService.getAllProjects();
+    }
+
     @GetMapping("/{id}")
     public Project getProject(@PathVariable Long id) {
         return projectService.getProjectById(id);
     }
 
 
-//    @GetMapping
-//    public List<Project> getAllProjects() {
-//        return projectRepository.findAll();
-//    }
-//
 //    @PutMapping("/{id}")
 //    public ResponseEntity<Project> updateProject(@PathVariable Long id, @RequestBody Project updatedProject) {
 //        return projectRepository.findById(id).map(project -> {
@@ -56,13 +59,13 @@ class ProjectController {
 //            return ResponseEntity.ok(projectRepository.save(project));
 //        }).orElseGet(() -> ResponseEntity.notFound().build());
 //    }
-//
-//    @DeleteMapping("/{id}")
-//    public ResponseEntity<Void> deleteProject(@PathVariable Long id) {
-//        if (projectRepository.existsById(id)) {
-//            projectRepository.deleteById(id);
-//            return ResponseEntity.noContent().build();
-//        }
-//        return ResponseEntity.notFound().build();
-//    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteProject(@PathVariable Long id) {
+        try {
+            return ResponseEntity.ok(projectService.deleteProject(id));
+        }catch (EntityNotFoundException ex){
+            return ResponseEntity.status(404).body(ex.getMessage());
+        }
+    }
 }

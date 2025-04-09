@@ -7,12 +7,15 @@ import com.example.projectservice.exception.ProjectNotFoundException;
 import com.example.projectservice.model.Project;
 import com.example.projectservice.model.Role;
 import com.example.projectservice.repository.ProjectRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 @Service
 public class ProjectService {
@@ -59,6 +62,18 @@ public class ProjectService {
         project.setEndDate(LocalDate.parse(projectDto.getEndDate(), formatter));
         project.setOwnerid(userId);
         return project;
+    }
+
+    public List<Project> getAllProjects() {
+        return projectRepository.findAll();
+    }
+
+    public String deleteProject(Long id){
+        if (projectRepository.existsById(id)) {
+            projectRepository.deleteById(id);
+            return "Project delete successful";
+        }
+        throw new EntityNotFoundException("Project not found");
     }
 
 }
