@@ -4,7 +4,6 @@ import com.example.projectservice.dto.ProjectDto;
 import com.example.projectservice.dto.UserDto;
 import com.example.projectservice.model.Project;
 import com.example.projectservice.service.ProjectService;
-import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -64,8 +63,8 @@ class ProjectController {
     public ResponseEntity<String> deleteProject(@PathVariable Long id) {
         try {
             return ResponseEntity.ok(projectService.deleteProject(id));
-        }catch (EntityNotFoundException ex){
-            return ResponseEntity.status(404).body(ex.getMessage());
+        }catch (ResponseStatusException ex){
+            return ResponseEntity.status(ex.getStatusCode()).body(ex.getMessage());
         }
     }
 }
