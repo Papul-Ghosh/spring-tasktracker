@@ -35,12 +35,12 @@ class ProjectController {
         return ResponseEntity.ok(projectService.getActiveUser());
     }
 
-//    @GetMapping("/{id}")
-//    public ResponseEntity<Project> getProject(@PathVariable Long id) {
-//        Optional<Project> project = projectRepository.findById(id);
-//        return project.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
-//    }
-//
+    @GetMapping("/{id}")
+    public Project getProject(@PathVariable Long id) {
+        return projectService.getProjectById(id);
+    }
+
+
 //    @GetMapping
 //    public List<Project> getAllProjects() {
 //        return projectRepository.findAll();

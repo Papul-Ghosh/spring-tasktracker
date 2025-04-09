@@ -3,6 +3,7 @@ package com.example.projectservice.service;
 import com.example.projectservice.client.UserClient;
 import com.example.projectservice.dto.ProjectDto;
 import com.example.projectservice.dto.UserDto;
+import com.example.projectservice.exception.ProjectNotFoundException;
 import com.example.projectservice.model.Project;
 import com.example.projectservice.model.Role;
 import com.example.projectservice.repository.ProjectRepository;
@@ -38,6 +39,12 @@ public class ProjectService {
         Project newProject = mapProjectDtoToProject(projectDto, user.getId());
         return projectRepository.save(newProject);
     }
+
+    public Project getProjectById(Long id) {
+        return projectRepository.findById(id)
+                .orElseThrow(() -> new ProjectNotFoundException("Project not found with id: " + id));
+    }
+
 
     public UserDto getActiveUser() {
         return userClient.getUserFromUserService();
