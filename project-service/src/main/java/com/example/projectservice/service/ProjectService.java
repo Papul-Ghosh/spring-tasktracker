@@ -69,11 +69,18 @@ public class ProjectService {
     }
 
     public String deleteProject(Long id){
-        if (projectRepository.existsById(id)) {
-            projectRepository.deleteById(id);
-            return "Project delete successful";
+        if (!projectRepository.existsById(id)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Project not found");
         }
-        throw new EntityNotFoundException("Project not found");
+
+        Long ownerId = getProjectById(id).getOwnerid();
+        UserDto user;
+        user = getActiveUser();
+        if(!user.getId().equals(ownerId)){
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Only project owner is allowed to delete the project");
+        }
+        projectRepository.deleteById(id);
+        return "Project delete successful";
     }
 
 }

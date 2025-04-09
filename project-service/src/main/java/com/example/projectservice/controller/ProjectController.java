@@ -64,8 +64,8 @@ class ProjectController {
     public ResponseEntity<String> deleteProject(@PathVariable Long id) {
         try {
             return ResponseEntity.ok(projectService.deleteProject(id));
-        }catch (EntityNotFoundException ex){
-            return ResponseEntity.status(404).body(ex.getMessage());
+        }catch (ResponseStatusException ex){
+            return ResponseEntity.status(ex.getStatusCode()).body(ex.getMessage());
         }
     }
 }
