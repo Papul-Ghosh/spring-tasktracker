@@ -48,4 +48,15 @@ public class UserController {
             return ResponseEntity.status(ex.getStatusCode()).body(ex.getMessage());
         }
     }
+
+    @GetMapping("/activeUserId")
+    public ResponseEntity<?> getActiveUserId() {
+        try{
+            User user = userService.activeUser();
+            return ResponseEntity.status(HttpStatus.OK).body(user.getId());
+        }
+        catch (ResponseStatusException ex){
+            return ResponseEntity.status(ex.getStatusCode()).body(ex.getMessage());
+        }
+    }
 }
