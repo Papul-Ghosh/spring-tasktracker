@@ -20,8 +20,9 @@ public class TaskDto {
     @NotEmpty(message = "task id cannot be empty")
     private Long projectId;
 
-    @NotEmpty(message = "task priority cannot be empty")
     private String priority;
+
+    private Long assigneeId;
 
 
     @NotEmpty(message = "task story point cannot be empty")

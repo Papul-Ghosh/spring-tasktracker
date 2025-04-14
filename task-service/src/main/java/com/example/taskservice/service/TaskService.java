@@ -37,11 +37,22 @@ public class TaskService {
         task.setTitle(taskDto.getTitle());
         task.setDescription(taskDto.getDescription());
         task.setProjectId(taskDto.getProjectId());
-        task.setAssigneeId(userId);
         task.setOwnerId(userId);
         task.setStatus(Status.OPEN);
-        task.setPriority(Priority.valueOf(taskDto.getPriority().toUpperCase()));
         task.setStoryPoint(taskDto.getStoryPoint());
+
+        if (taskDto.getAssigneeId() == null){
+            task.setAssigneeId(userId);
+        }
+        else task.setAssigneeId(taskDto.getAssigneeId());
+
+        if (taskDto.getPriority() == null){
+            task.setPriority(Priority.LOW);
+        }
+        else task.setPriority(Priority.valueOf(taskDto.getPriority().toUpperCase()));
+
+
+
         return task;
     }
 }

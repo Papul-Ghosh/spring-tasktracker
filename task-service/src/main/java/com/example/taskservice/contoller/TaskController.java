@@ -1,7 +1,9 @@
 package com.example.taskservice.contoller;
 
+import com.example.taskservice.client.ProjectClient;
 import com.example.taskservice.client.UserClient;
 import com.example.taskservice.dto.TaskDto;
+import com.example.taskservice.exception.ProjectNotFoundException;
 import com.example.taskservice.model.Task;
 import com.example.taskservice.service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,16 +22,21 @@ public class TaskController {
     @Autowired
     private final TaskService taskService;
     private final UserClient userClient;
+    private final ProjectClient projectClient;
 
-    public TaskController(TaskService taskService, UserClient userClient) {
+    public TaskController(TaskService taskService, UserClient userClient, ProjectClient projectClient) {
         this.taskService = taskService;
         this.userClient = userClient;
+        this.projectClient = projectClient;
     }
 
     @PostMapping("/create")
     public ResponseEntity<?> createTask(@RequestBody TaskDto taskDto){
         try {
             Long activeUserId = getActiveUserId();
+            if (!projectClient.existsProjectId(taskDto.getProjectId())){
+                throw new ProjectNotFoundException("Project not found with id: " + taskDto.getProjectId());
+            }
             Task task = taskService.createTask(taskDto, activeUserId);
             return ResponseEntity.status(HttpStatus.CREATED).body(task);
         } catch (ResponseStatusException ex) {

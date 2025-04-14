@@ -2,6 +2,7 @@ package com.example.projectservice.controller;
 
 import com.example.projectservice.dto.ProjectDto;
 import com.example.projectservice.dto.UserDto;
+import com.example.projectservice.exception.ProjectNotFoundException;
 import com.example.projectservice.model.Project;
 import com.example.projectservice.service.ProjectService;
 import org.springframework.http.HttpStatus;
@@ -45,6 +46,17 @@ class ProjectController {
     @GetMapping("/{id}")
     public Project getProject(@PathVariable Long id) {
         return projectService.getProjectById(id);
+    }
+
+    @GetMapping("/exists/{id}")
+    public boolean existsProject(@PathVariable Long id) {
+        try{
+            projectService.getProjectById(id);
+            return true;
+        }
+        catch (ProjectNotFoundException ex){
+            return false;
+        }
     }
 
 
