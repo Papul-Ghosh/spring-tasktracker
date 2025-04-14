@@ -15,8 +15,8 @@ import lombok.Setter;
 @Table(name = "tasks")
 public class Task {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private String id;
 
     @Column(nullable = false, unique = true)
     private String title;
