@@ -7,7 +7,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
-public interface TaskRepository extends JpaRepository<Task, Long> {
+public interface TaskRepository extends JpaRepository<Task, String> {
     @Query("SELECT t FROM Task t WHERE t.projectId = :projectId ORDER BY t.id DESC")
-    List<Task> findTopByProjectIdOrderByIdDesc(@Param("projectId") Long projectId);
+    List<Task> findTasksByProjectIdOrderByIdDesc(@Param("projectId") Long projectId);
 }
