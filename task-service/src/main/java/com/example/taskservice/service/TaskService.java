@@ -1,7 +1,8 @@
 package com.example.taskservice.service;
 
 import com.example.taskservice.dto.TaskDto;
-import com.example.taskservice.exception.TasktNotFoundException;
+import com.example.taskservice.exception.ProjectNotFoundException;
+import com.example.taskservice.exception.UserNotFoundException;
 import com.example.taskservice.model.Priority;
 import com.example.taskservice.model.Status;
 import com.example.taskservice.model.Task;
@@ -25,7 +26,6 @@ public class TaskService {
     }
 
     public Task updateTaskPriority(Task task, String priority) {
-        System.out.println(priority);
         Priority newPriority = Priority.valueOf(priority.toUpperCase());
         task.setPriority(newPriority);
         return taskRepository.save(task);
@@ -37,6 +37,12 @@ public class TaskService {
         task.setStatus(newStatus);
         return taskRepository.save(task);
     }
+
+    public Task updateTaskAssignee(Task task, Long userId) {
+        task.setAssigneeId(userId);
+        return taskRepository.save(task);
+    }
+
 
     private String getTaskId(Long projectId) {
         int nextInt = 1;
@@ -76,6 +82,6 @@ public class TaskService {
 
     public Task getTaskById(String id) {
         return taskRepository.findById(id)
-                .orElseThrow(() -> new TasktNotFoundException("Task not found with id: " + id));
+                .orElseThrow(() -> new ProjectNotFoundException("Task not found with id: " + id));
     }
 }

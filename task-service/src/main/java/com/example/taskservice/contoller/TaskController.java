@@ -3,7 +3,8 @@ package com.example.taskservice.contoller;
 import com.example.taskservice.client.ProjectClient;
 import com.example.taskservice.client.UserClient;
 import com.example.taskservice.dto.TaskDto;
-import com.example.taskservice.exception.TasktNotFoundException;
+import com.example.taskservice.exception.ProjectNotFoundException;
+import com.example.taskservice.exception.UserNotFoundException;
 import com.example.taskservice.model.Task;
 import com.example.taskservice.service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +38,10 @@ public class TaskController {
         try {
             Long activeUserId = getActiveUserId();
             if (!projectClient.existsProjectId(taskDto.getProjectId())) {
-                throw new TasktNotFoundException("Project not found with id: " + taskDto.getProjectId());
+                throw new ProjectNotFoundException("Project not found with id: " + taskDto.getProjectId());
+            }
+            if (!userClient.existsUserId(taskDto.getAssigneeId())){
+                throw new UserNotFoundException("No User found with assignee id: " + taskDto.getAssigneeId());
             }
             Task task = taskService.createTask(taskDto, activeUserId);
             return ResponseEntity.status(HttpStatus.CREATED).body(task);
@@ -68,7 +72,19 @@ public class TaskController {
         }
     }
 
-
+    @PutMapping("/{id}/assignee")
+    public ResponseEntity<?> updateTaskAssignee(@PathVariable String id, @RequestBody Long userId){
+        try {
+            if (!userClient.existsUserId(userId)){
+                throw new UserNotFoundException("No User found with assignee id: " + userId);
+            }
+            Task task = taskService.getTaskById(id);
+            Task updatedTask = taskService.updateTaskAssignee(task, userId);
+            return ResponseEntity.status(HttpStatus.CREATED).body(updatedTask);
+        } catch (ResponseStatusException ex) {
+            return ResponseEntity.status(ex.getStatusCode()).body(ex.getMessage());
+        }
+    }
 
 
     public Long getActiveUserId() {

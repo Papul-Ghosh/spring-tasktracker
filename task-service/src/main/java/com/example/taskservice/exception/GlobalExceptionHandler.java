@@ -8,8 +8,12 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(TasktNotFoundException.class)
-    public ResponseEntity<String> handleNotFound(TasktNotFoundException ex) {
+    @ExceptionHandler(ProjectNotFoundException.class)
+    public ResponseEntity<String> handleNotFound(ProjectNotFoundException ex) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
+    }
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<String> handleNotFound(UserNotFoundException ex) {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
     }
 }

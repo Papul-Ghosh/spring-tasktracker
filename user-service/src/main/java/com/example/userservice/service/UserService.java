@@ -130,6 +130,10 @@ public class UserService {
         return activeTokens.getFirst().getUser();
     }
 
+    public boolean existsUserId(Long id){
+        return userRepository.existsById(id);
+    }
+
 
 
 

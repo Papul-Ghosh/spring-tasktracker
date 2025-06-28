@@ -59,4 +59,14 @@ public class UserController {
             return ResponseEntity.status(ex.getStatusCode()).body(ex.getMessage());
         }
     }
+
+    @GetMapping("/existsUserId/{id}")
+    public ResponseEntity<?> existsUserId(@PathVariable Long id) {
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body(userService.existsUserId(id));
+        } catch (ResponseStatusException ex) {
+            return ResponseEntity.status(ex.getStatusCode()).body(false);
+        }
+    }
+
 }
