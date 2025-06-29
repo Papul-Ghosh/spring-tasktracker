@@ -4,7 +4,7 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
-@FeignClient(name = "task-service", url = "${userservice.url}")
+@FeignClient(name = "user-service", url = "${userservice.url}")
 public interface UserClient {
     @GetMapping("${userservice.activeUserid.url}")
     Long getUserIdFromUserService();

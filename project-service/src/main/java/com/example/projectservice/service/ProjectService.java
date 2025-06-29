@@ -1,7 +1,9 @@
 package com.example.projectservice.service;
 
+import com.example.projectservice.client.TaskClient;
 import com.example.projectservice.client.UserClient;
 import com.example.projectservice.dto.ProjectDto;
+import com.example.projectservice.dto.TaskDto;
 import com.example.projectservice.dto.UserDto;
 import com.example.projectservice.exception.ProjectNotFoundException;
 import com.example.projectservice.model.Project;
@@ -9,6 +11,7 @@ import com.example.projectservice.model.Role;
 import com.example.projectservice.repository.ProjectRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
@@ -20,11 +23,13 @@ public class ProjectService {
 
     private final ProjectRepository projectRepository;
     private final UserClient userClient;
+    private final TaskClient taskClient;
 
     public ProjectService(ProjectRepository projectRepository,
-                          UserClient userClient) {
+                          UserClient userClient, TaskClient taskClient) {
         this.projectRepository = projectRepository;
         this.userClient = userClient;
+        this.taskClient = taskClient;
     }
 
 
@@ -80,5 +85,11 @@ public class ProjectService {
         projectRepository.deleteById(id);
         return "Project delete successful";
     }
+
+    public List<TaskDto> getTasksByProjectId(Long projectId) {
+        List<TaskDto> tasks = taskClient.getTasksByProjectId(projectId);
+        return tasks;
+    }
+
 
 }

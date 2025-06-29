@@ -1,6 +1,7 @@
 package com.example.projectservice.controller;
 
 import com.example.projectservice.dto.ProjectDto;
+import com.example.projectservice.dto.TaskDto;
 import com.example.projectservice.dto.UserDto;
 import com.example.projectservice.exception.ProjectNotFoundException;
 import com.example.projectservice.model.Project;
@@ -79,4 +80,14 @@ class ProjectController {
             return ResponseEntity.status(ex.getStatusCode()).body(ex.getMessage());
         }
     }
+
+    @GetMapping("/{projectId}/tasks")
+    public List<TaskDto> getTasksByProject(@PathVariable Long projectId) {
+        if (! existsProject(projectId)) {
+            throw new ProjectNotFoundException("Project not found with id: " + projectId);
+        }
+        return projectService.getTasksByProjectId(projectId);
+    }
+
+
 }

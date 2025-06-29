@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+import java.util.List;
 
 @RestController
 @RequestMapping("/v1/tasks")
@@ -29,8 +30,16 @@ public class TaskController {
     }
 
     @GetMapping("/{id}")
-    public Task getProject(@PathVariable String id) {
+    public Task getTask(@PathVariable String id) {
         return taskService.getTaskById(id);
+    }
+
+    @GetMapping("/project/{projectId}")
+    public List<Task> getTasksByProject(@PathVariable Long projectId) {
+        if (!projectClient.existsProjectId(projectId)) {
+            throw new ProjectNotFoundException("Project not found with id: " + projectId);
+        }
+        return taskService.getTaskByProjectId(projectId);
     }
 
     @PostMapping("/create")

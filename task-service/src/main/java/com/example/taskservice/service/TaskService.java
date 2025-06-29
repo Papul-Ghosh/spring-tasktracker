@@ -1,8 +1,7 @@
 package com.example.taskservice.service;
 
 import com.example.taskservice.dto.TaskDto;
-import com.example.taskservice.exception.ProjectNotFoundException;
-import com.example.taskservice.exception.UserNotFoundException;
+import com.example.taskservice.exception.TaskNotFoundException;
 import com.example.taskservice.model.Priority;
 import com.example.taskservice.model.Status;
 import com.example.taskservice.model.Task;
@@ -82,6 +81,12 @@ public class TaskService {
 
     public Task getTaskById(String id) {
         return taskRepository.findById(id)
-                .orElseThrow(() -> new ProjectNotFoundException("Task not found with id: " + id));
+                .orElseThrow(() -> new TaskNotFoundException("Task not found with id: " + id));
+    }
+
+    public List<Task> getTaskByProjectId(Long projectId) {
+        List<Task> existingTasks = taskRepository.findTasksByProjectIdOrderByIdDesc(projectId);
+        System.out.println(existingTasks);
+        return existingTasks;
     }
 }
