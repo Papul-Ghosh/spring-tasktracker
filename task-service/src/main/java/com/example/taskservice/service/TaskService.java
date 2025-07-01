@@ -1,5 +1,6 @@
 package com.example.taskservice.service;
 
+import com.example.taskservice.dto.TaskEventDto;
 import com.example.taskservice.dto.TaskProjectDto;
 import com.example.taskservice.dto.TaskDto;
 import com.example.taskservice.exception.TaskNotFoundException;
@@ -20,18 +21,19 @@ public class TaskService {
 
     @Autowired
     private final TaskRepository taskRepository;
-    KafkaTemplate<String, TaskProjectDto> kafkaTaskProject;
+    KafkaTemplate<String, TaskEventDto> kafkaTemplate;
 
-    public TaskService(TaskRepository taskRepository, KafkaTemplate<String, TaskProjectDto> kafkaTaskProject) {
+    public TaskService(TaskRepository taskRepository, KafkaTemplate<String, TaskEventDto> kafkaTemplate) {
         this.taskRepository = taskRepository;
-        this.kafkaTaskProject = kafkaTaskProject;
+        this.kafkaTemplate = kafkaTemplate;
     }
 
     public Task createTask(TaskDto taskDto, Long userId) {
         String taskId = getTaskId(taskDto.getProjectId());
         Task newTask = mapTaskDtoToTask(taskDto, taskId, userId);
         TaskProjectDto taskProjectDto = new TaskProjectDto(newTask.getProjectId(), newTask.getId());
-        kafkaTaskProject.send("topic-create-task", taskProjectDto);
+        TaskEventDto eventDto = new TaskEventDto("TASK_CREATED", taskProjectDto);
+        kafkaTemplate.send("task-events", newTask.getId(), eventDto);
         return taskRepository.save(newTask);
     }
 
@@ -65,7 +67,8 @@ public class TaskService {
         taskRepository.deleteById(id);
 
         TaskProjectDto taskProjectDto = new TaskProjectDto(task.getProjectId(), task.getId());
-        kafkaTaskProject.send("topic-delete-task", taskProjectDto);
+        TaskEventDto eventDto = new TaskEventDto("TASK_DELETED", taskProjectDto);
+        kafkaTemplate.send("task-events", task.getId(), eventDto);
         return "Task delete successful";
     }
 

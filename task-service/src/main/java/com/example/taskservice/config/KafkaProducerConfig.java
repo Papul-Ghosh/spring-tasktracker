@@ -1,6 +1,6 @@
 package com.example.taskservice.config;
 
-import com.example.taskservice.dto.TaskProjectDto;
+import com.example.taskservice.dto.TaskEventDto;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.context.annotation.Bean;
@@ -17,7 +17,7 @@ import java.util.Map;
 public class KafkaProducerConfig {
 
     @Bean
-    public ProducerFactory<String, TaskProjectDto> producerFactory() {
+    public ProducerFactory<String, TaskEventDto> producerFactory() {
         Map<String, Object> configProps = new HashMap<>();
         configProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
         configProps.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
@@ -26,7 +26,7 @@ public class KafkaProducerConfig {
     }
 
     @Bean
-    public KafkaTemplate<String, TaskProjectDto> taskProjectSender() {
+    public KafkaTemplate<String, TaskEventDto> taskProjectSender() {
         return new KafkaTemplate<>(producerFactory());
     }
 }

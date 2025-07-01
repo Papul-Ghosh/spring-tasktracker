@@ -2,10 +2,7 @@ package com.example.projectservice.service;
 
 import com.example.projectservice.client.TaskClient;
 import com.example.projectservice.client.UserClient;
-import com.example.projectservice.dto.ProjectDto;
-import com.example.projectservice.dto.TaskProjectDto;
-import com.example.projectservice.dto.TaskDto;
-import com.example.projectservice.dto.UserDto;
+import com.example.projectservice.dto.*;
 import com.example.projectservice.exception.ProjectNotFoundException;
 import com.example.projectservice.model.Project;
 import com.example.projectservice.model.Role;
@@ -95,8 +92,7 @@ public class ProjectService {
         return tasks;
     }
 
-    @KafkaListener(topics = {"topic-create-task"}, groupId = "group-create-task", containerFactory = "taskProjectListener")
-    public void listenToCreateTask(TaskProjectDto taskProjectDto){
+    public void syncNewTask(TaskProjectDto taskProjectDto){
 
         Project project = getProjectById(taskProjectDto.getProjectId());
         List<String> taskList = project.getTaskIds();
@@ -105,14 +101,21 @@ public class ProjectService {
         projectRepository.save(project);
     }
 
-    @KafkaListener(topics = {"topic-delete-task"}, containerFactory = "taskProjectListener")
-    public void listenToDeleteTask(TaskProjectDto taskProjectDto){
+    public void removeTask(TaskProjectDto taskProjectDto){
 
         Project project = getProjectById(taskProjectDto.getProjectId());
         List<String> taskList = project.getTaskIds();
         taskList.remove(taskProjectDto.getTaskId());
         project.setTaskIds(taskList);
         projectRepository.save(project);
+    }
+
+    @KafkaListener(topics = "task-events", groupId = "project-service", containerFactory = "taskProjectListener")
+    public void handleTaskEvents(TaskEventDto eventDto) {
+        switch (eventDto.getEventType()) {
+            case "TASK_CREATED" -> syncNewTask(eventDto.getTaskProjectDto());
+            case "TASK_DELETED" -> removeTask(eventDto.getTaskProjectDto());
+        }
     }
 
 }
