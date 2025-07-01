@@ -95,12 +95,22 @@ public class ProjectService {
         return tasks;
     }
 
-    @KafkaListener(topics = {"topic-create-task"}, groupId = "create-task-group", containerFactory = "taskCreatedListener")
-    public void listenToTopic(TaskCreatedDto taskCreatedDto){
+    @KafkaListener(topics = {"topic-create-task"}, groupId = "group-create-task", containerFactory = "taskCreatedListener")
+    public void listenToCreateTask(TaskCreatedDto taskCreatedDto){
 
         Project project = getProjectById(taskCreatedDto.getProjectId());
         List<String> taskList = project.getTaskIds();
         taskList.add(taskCreatedDto.getTaskId());
+        project.setTaskIds(taskList);
+        projectRepository.save(project);
+    }
+
+    @KafkaListener(topics = {"topic-delete-task"}, containerFactory = "taskCreatedListener")
+    public void listenToDeleteTask(TaskCreatedDto taskProjectDto){
+
+        Project project = getProjectById(taskProjectDto.getProjectId());
+        List<String> taskList = project.getTaskIds();
+        taskList.remove(taskProjectDto.getTaskId());
         project.setTaskIds(taskList);
         projectRepository.save(project);
     }

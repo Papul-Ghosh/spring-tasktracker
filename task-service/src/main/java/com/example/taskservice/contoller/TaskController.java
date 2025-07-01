@@ -95,6 +95,15 @@ public class TaskController {
         }
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteTask(@PathVariable String id) {
+        try {
+            return ResponseEntity.ok(taskService.deleteTask(id, getActiveUserId()));
+        }catch (ResponseStatusException ex){
+            return ResponseEntity.status(ex.getStatusCode()).body(ex.getMessage());
+        }
+    }
+
 
     public Long getActiveUserId() {
         return userClient.getUserIdFromUserService();

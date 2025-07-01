@@ -6,13 +6,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.io.Serializable;
-
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class TaskCreatedDto implements Serializable{
+public class TaskCreatedDto {
     @NotEmpty(message = "project id cannot be empty")
     private Long projectId;
 

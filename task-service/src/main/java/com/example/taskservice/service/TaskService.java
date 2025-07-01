@@ -8,8 +8,11 @@ import com.example.taskservice.model.Status;
 import com.example.taskservice.model.Task;
 import com.example.taskservice.repository.TaskRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
+
 import java.util.List;
 
 @Service
@@ -50,6 +53,23 @@ public class TaskService {
         return taskRepository.save(task);
     }
 
+    public String deleteTask(String id, Long activeUserId){
+        if (!taskRepository.existsById(id)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Task not found");
+        }
+
+        Task task = getTaskById(id);
+        if (!activeUserId.equals(task.getOwnerId())){
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Only task owner is allowed to delete the task");
+        }
+        taskRepository.deleteById(id);
+
+        TaskCreatedDto taskProjectDto = new TaskCreatedDto(task.getProjectId(), task.getId());
+        kafkaTemplate.send("topic-delete-task", taskProjectDto);
+        return "Task delete successful";
+    }
+
+
 
     private String getTaskId(Long projectId) {
         int nextInt = 1;
@@ -81,8 +101,6 @@ public class TaskService {
             task.setPriority(Priority.LOW);
         }
         else task.setPriority(Priority.valueOf(taskDto.getPriority().toUpperCase()));
-
-
 
         return task;
     }
