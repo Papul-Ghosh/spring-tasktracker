@@ -1,6 +1,6 @@
 package com.example.taskservice.service;
 
-import com.example.taskservice.dto.TaskCreatedDto;
+import com.example.taskservice.dto.TaskProjectDto;
 import com.example.taskservice.dto.TaskDto;
 import com.example.taskservice.exception.TaskNotFoundException;
 import com.example.taskservice.model.Priority;
@@ -20,18 +20,18 @@ public class TaskService {
 
     @Autowired
     private final TaskRepository taskRepository;
-    KafkaTemplate<String, TaskCreatedDto> kafkaTemplate;
+    KafkaTemplate<String, TaskProjectDto> kafkaTaskProject;
 
-    public TaskService(TaskRepository taskRepository, KafkaTemplate<String, TaskCreatedDto> kafkaTemplate) {
+    public TaskService(TaskRepository taskRepository, KafkaTemplate<String, TaskProjectDto> kafkaTaskProject) {
         this.taskRepository = taskRepository;
-        this.kafkaTemplate = kafkaTemplate;
+        this.kafkaTaskProject = kafkaTaskProject;
     }
 
     public Task createTask(TaskDto taskDto, Long userId) {
         String taskId = getTaskId(taskDto.getProjectId());
         Task newTask = mapTaskDtoToTask(taskDto, taskId, userId);
-        TaskCreatedDto taskCreatedDto = new TaskCreatedDto(newTask.getProjectId(), newTask.getId());
-        kafkaTemplate.send("topic-create-task", taskCreatedDto);
+        TaskProjectDto taskProjectDto = new TaskProjectDto(newTask.getProjectId(), newTask.getId());
+        kafkaTaskProject.send("topic-create-task", taskProjectDto);
         return taskRepository.save(newTask);
     }
 
@@ -64,12 +64,10 @@ public class TaskService {
         }
         taskRepository.deleteById(id);
 
-        TaskCreatedDto taskProjectDto = new TaskCreatedDto(task.getProjectId(), task.getId());
-        kafkaTemplate.send("topic-delete-task", taskProjectDto);
+        TaskProjectDto taskProjectDto = new TaskProjectDto(task.getProjectId(), task.getId());
+        kafkaTaskProject.send("topic-delete-task", taskProjectDto);
         return "Task delete successful";
     }
-
-
 
     private String getTaskId(Long projectId) {
         int nextInt = 1;
