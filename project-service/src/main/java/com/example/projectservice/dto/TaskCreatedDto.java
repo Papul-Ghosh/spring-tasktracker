@@ -1,4 +1,4 @@
-package com.example.taskservice.dto;
+package com.example.projectservice.dto;
 
 import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;

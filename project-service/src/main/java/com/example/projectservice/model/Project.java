@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import java.time.LocalDate;
+import java.util.List;
 
 @Getter
 @Setter
@@ -32,4 +33,7 @@ public class Project {
 
     @Column(nullable = false)
     private Long ownerid;
+
+    @Column(nullable = false)
+    private List<String> taskIds;
 }

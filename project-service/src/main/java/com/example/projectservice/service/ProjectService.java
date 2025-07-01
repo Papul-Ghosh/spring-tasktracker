@@ -3,6 +3,7 @@ package com.example.projectservice.service;
 import com.example.projectservice.client.TaskClient;
 import com.example.projectservice.client.UserClient;
 import com.example.projectservice.dto.ProjectDto;
+import com.example.projectservice.dto.TaskCreatedDto;
 import com.example.projectservice.dto.TaskDto;
 import com.example.projectservice.dto.UserDto;
 import com.example.projectservice.exception.ProjectNotFoundException;
@@ -10,12 +11,13 @@ import com.example.projectservice.model.Project;
 import com.example.projectservice.model.Role;
 import com.example.projectservice.repository.ProjectRepository;
 import org.springframework.http.HttpStatus;
+import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -57,6 +59,7 @@ public class ProjectService {
     }
 
     private Project mapProjectDtoToProject(ProjectDto projectDto, long userId) {
+        List<String> taskIds = Collections.<String>emptyList();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         Project project = new Project();
         project.setName(projectDto.getName());
@@ -64,6 +67,7 @@ public class ProjectService {
         project.setStartDate(LocalDate.parse(projectDto.getStartDate(), formatter));
         project.setEndDate(LocalDate.parse(projectDto.getEndDate(), formatter));
         project.setOwnerid(userId);
+        project.setTaskIds(taskIds);
         return project;
     }
 
@@ -91,5 +95,14 @@ public class ProjectService {
         return tasks;
     }
 
+    @KafkaListener(topics = {"topic-create-task"}, groupId = "create-task-group", containerFactory = "taskCreatedListener")
+    public void listenToTopic(TaskCreatedDto taskCreatedDto){
+
+        Project project = getProjectById(taskCreatedDto.getProjectId());
+        List<String> taskList = project.getTaskIds();
+        taskList.add(taskCreatedDto.getTaskId());
+        project.setTaskIds(taskList);
+        projectRepository.save(project);
+    }
 
 }
