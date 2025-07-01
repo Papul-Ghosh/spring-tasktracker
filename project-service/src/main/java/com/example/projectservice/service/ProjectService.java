@@ -3,7 +3,7 @@ package com.example.projectservice.service;
 import com.example.projectservice.client.TaskClient;
 import com.example.projectservice.client.UserClient;
 import com.example.projectservice.dto.ProjectDto;
-import com.example.projectservice.dto.TaskCreatedDto;
+import com.example.projectservice.dto.TaskProjectDto;
 import com.example.projectservice.dto.TaskDto;
 import com.example.projectservice.dto.UserDto;
 import com.example.projectservice.exception.ProjectNotFoundException;
@@ -95,18 +95,18 @@ public class ProjectService {
         return tasks;
     }
 
-    @KafkaListener(topics = {"topic-create-task"}, groupId = "group-create-task", containerFactory = "taskCreatedListener")
-    public void listenToCreateTask(TaskCreatedDto taskCreatedDto){
+    @KafkaListener(topics = {"topic-create-task"}, groupId = "group-create-task", containerFactory = "taskProjectListener")
+    public void listenToCreateTask(TaskProjectDto taskProjectDto){
 
-        Project project = getProjectById(taskCreatedDto.getProjectId());
+        Project project = getProjectById(taskProjectDto.getProjectId());
         List<String> taskList = project.getTaskIds();
-        taskList.add(taskCreatedDto.getTaskId());
+        taskList.add(taskProjectDto.getTaskId());
         project.setTaskIds(taskList);
         projectRepository.save(project);
     }
 
-    @KafkaListener(topics = {"topic-delete-task"}, containerFactory = "taskCreatedListener")
-    public void listenToDeleteTask(TaskCreatedDto taskProjectDto){
+    @KafkaListener(topics = {"topic-delete-task"}, containerFactory = "taskProjectListener")
+    public void listenToDeleteTask(TaskProjectDto taskProjectDto){
 
         Project project = getProjectById(taskProjectDto.getProjectId());
         List<String> taskList = project.getTaskIds();

@@ -10,7 +10,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class TaskCreatedDto {
+public class TaskProjectDto {
     @NotEmpty(message = "project id cannot be empty")
     private Long projectId;
 

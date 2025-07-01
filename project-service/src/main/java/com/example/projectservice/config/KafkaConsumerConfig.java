@@ -1,6 +1,6 @@
 package com.example.projectservice.config;
 
-import com.example.projectservice.dto.TaskCreatedDto;
+import com.example.projectservice.dto.TaskProjectDto;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.context.annotation.Bean;
@@ -18,7 +18,7 @@ import java.util.Map;
 public class KafkaConsumerConfig {
 
     @Bean
-    public ConsumerFactory<String, TaskCreatedDto> consumerFactory() {
+    public ConsumerFactory<String, TaskProjectDto> consumerFactory() {
         Map<String, Object> props = new HashMap<>();
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
         props.put(ConsumerConfig.GROUP_ID_CONFIG, "group-create-task");
@@ -27,14 +27,14 @@ public class KafkaConsumerConfig {
         props.put(ErrorHandlingDeserializer.KEY_DESERIALIZER_CLASS, StringDeserializer.class);
         props.put(ErrorHandlingDeserializer.VALUE_DESERIALIZER_CLASS, JsonDeserializer.class);
         props.put(JsonDeserializer.TRUSTED_PACKAGES, "com.example.projectservice.dto");
-        props.put(JsonDeserializer.VALUE_DEFAULT_TYPE, "com.example.projectservice.dto.TaskCreatedDto");
+        props.put(JsonDeserializer.VALUE_DEFAULT_TYPE, "com.example.projectservice.dto.TaskProjectDto");
         props.put(JsonDeserializer.USE_TYPE_INFO_HEADERS, false);
         return new DefaultKafkaConsumerFactory<>(props);
     }
 
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, TaskCreatedDto> taskCreatedListener() {
-        var factory = new ConcurrentKafkaListenerContainerFactory<String, TaskCreatedDto>();
+    public ConcurrentKafkaListenerContainerFactory<String, TaskProjectDto> taskProjectListener() {
+        var factory = new ConcurrentKafkaListenerContainerFactory<String, TaskProjectDto>();
         factory.setConsumerFactory(consumerFactory());
         return factory;
     }
