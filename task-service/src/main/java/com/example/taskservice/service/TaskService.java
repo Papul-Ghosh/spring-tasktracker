@@ -9,6 +9,7 @@ import com.example.taskservice.model.Status;
 import com.example.taskservice.model.Task;
 import com.example.taskservice.repository.TaskRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,8 @@ import java.util.List;
 @Service
 public class TaskService {
 
+    @Value("${app.kafka.task-topic}")
+    private String taskTopic;
     @Autowired
     private final TaskRepository taskRepository;
     KafkaTemplate<String, TaskEventDto> kafkaTemplate;
@@ -33,7 +36,7 @@ public class TaskService {
         Task newTask = mapTaskDtoToTask(taskDto, taskId, userId);
         TaskProjectDto taskProjectDto = new TaskProjectDto(newTask.getProjectId(), newTask.getId());
         TaskEventDto eventDto = new TaskEventDto("TASK_CREATED", taskProjectDto);
-        kafkaTemplate.send("task-events", newTask.getId(), eventDto);
+        kafkaTemplate.send(taskTopic, newTask.getId(), eventDto);
         return taskRepository.save(newTask);
     }
 

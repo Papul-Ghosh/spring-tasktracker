@@ -110,7 +110,7 @@ public class ProjectService {
         projectRepository.save(project);
     }
 
-    @KafkaListener(topics = "task-events", groupId = "project-service", containerFactory = "taskProjectListener")
+    @KafkaListener(topics = "#{'${app.kafka.task-topic}'}", groupId = "project-service", containerFactory = "taskProjectListener")
     public void handleTaskEvents(TaskEventDto eventDto) {
         switch (eventDto.getEventType()) {
             case "TASK_CREATED" -> syncNewTask(eventDto.getTaskProjectDto());
