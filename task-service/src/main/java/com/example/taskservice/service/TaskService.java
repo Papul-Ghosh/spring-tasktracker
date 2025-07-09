@@ -47,7 +47,6 @@ public class TaskService {
     }
 
     public Task updateTaskStatus(Task task, String status) {
-        System.out.println(status);
         Status newStatus = Status.valueOf(status.toUpperCase());
         task.setStatus(newStatus);
         return taskRepository.save(task);
