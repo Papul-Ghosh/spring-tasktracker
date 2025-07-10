@@ -1,7 +1,9 @@
 package com.example.taskservice.contoller;
 
+import com.example.taskservice.client.CommentClient;
 import com.example.taskservice.client.ProjectClient;
 import com.example.taskservice.client.UserClient;
+import com.example.taskservice.dto.CommentDto;
 import com.example.taskservice.dto.TaskDto;
 import com.example.taskservice.exception.ProjectNotFoundException;
 import com.example.taskservice.exception.UserNotFoundException;
@@ -22,11 +24,13 @@ public class TaskController {
     private final TaskService taskService;
     private final UserClient userClient;
     private final ProjectClient projectClient;
+    private final CommentClient commentClient;
 
-    public TaskController(TaskService taskService, UserClient userClient, ProjectClient projectClient) {
+    public TaskController(TaskService taskService, UserClient userClient, ProjectClient projectClient, CommentClient commentClient) {
         this.taskService = taskService;
         this.userClient = userClient;
         this.projectClient = projectClient;
+        this.commentClient = commentClient;
     }
 
     @GetMapping("/{id}")
@@ -103,6 +107,14 @@ public class TaskController {
             return ResponseEntity.status(ex.getStatusCode()).body(ex.getMessage());
         }
     }
+
+
+    @GetMapping("/{taskId}/comments")
+    public List<CommentDto> getCommentsByTask(@PathVariable String taskId) {
+        Task task = taskService.getTaskById(taskId);
+        return commentClient.getcommentsByTaskId(task.getId());
+    }
+
 
 
     public Long getActiveUserId() {
