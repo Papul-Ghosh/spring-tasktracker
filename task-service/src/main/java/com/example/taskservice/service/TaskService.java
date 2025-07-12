@@ -15,6 +15,7 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -40,6 +41,7 @@ public class TaskService {
         taskProjectDto.setTaskId(newTask.getId());
         taskProjectDto.setTaskTitle(newTask.getTitle());
         taskProjectDto.setTaskOwnerId(newTask.getOwnerId());
+        taskProjectDto.setUpdatedAt(LocalDateTime.now());
 
         TaskEventDto eventDto = new TaskEventDto("TASK_CREATED", taskProjectDto);
         kafkaTemplate.send(taskTopic, newTask.getId(), eventDto);
@@ -78,6 +80,7 @@ public class TaskService {
         taskProjectDto.setTaskId(task.getId());
         taskProjectDto.setTaskTitle(task.getTitle());
         taskProjectDto.setTaskOwnerId(task.getOwnerId());
+        taskProjectDto.setUpdatedAt(LocalDateTime.now());
 
         taskRepository.deleteById(id);
         TaskEventDto eventDto = new TaskEventDto("TASK_DELETED", taskProjectDto);

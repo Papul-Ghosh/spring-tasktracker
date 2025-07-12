@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.List;
@@ -138,6 +139,7 @@ public class ProjectService {
         projectNotificationDto.setTaskId(taskProjectDto.getTaskId());
         projectNotificationDto.setTaskName(taskProjectDto.getTaskTitle());
         projectNotificationDto.setTaskOwnerFullName(newTaskOwner.getFirstname() + " " + newTaskOwner.getLastname());
+        projectNotificationDto.setUpdatedAt(LocalDateTime.now());
         ProjectEventDto projectEventDto = new ProjectEventDto(msg, projectNotificationDto);
         return projectEventDto;
     }

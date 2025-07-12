@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+
 
 @Getter
 @Setter
@@ -21,4 +23,6 @@ public class ProjectNotificationDto {
     private String TaskId;
     private String TaskName;
     private String TaskOwnerFullName;
+
+    private LocalDateTime updatedAt;
 }
