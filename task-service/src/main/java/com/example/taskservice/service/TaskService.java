@@ -34,7 +34,13 @@ public class TaskService {
     public Task createTask(TaskDto taskDto, Long userId) {
         String taskId = getTaskId(taskDto.getProjectId());
         Task newTask = mapTaskDtoToTask(taskDto, taskId, userId);
-        TaskProjectDto taskProjectDto = new TaskProjectDto(newTask.getProjectId(), newTask.getId());
+
+        TaskProjectDto taskProjectDto = new TaskProjectDto();
+        taskProjectDto.setProjectId(newTask.getProjectId());
+        taskProjectDto.setTaskId(newTask.getId());
+        taskProjectDto.setTaskTitle(newTask.getTitle());
+        taskProjectDto.setTaskOwnerId(newTask.getOwnerId());
+
         TaskEventDto eventDto = new TaskEventDto("TASK_CREATED", taskProjectDto);
         kafkaTemplate.send(taskTopic, newTask.getId(), eventDto);
         return taskRepository.save(newTask);
@@ -66,9 +72,14 @@ public class TaskService {
         if (!activeUserId.equals(task.getOwnerId())){
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Only task owner is allowed to delete the task");
         }
-        taskRepository.deleteById(id);
 
-        TaskProjectDto taskProjectDto = new TaskProjectDto(task.getProjectId(), task.getId());
+        TaskProjectDto taskProjectDto = new TaskProjectDto();
+        taskProjectDto.setProjectId(task.getProjectId());
+        taskProjectDto.setTaskId(task.getId());
+        taskProjectDto.setTaskTitle(task.getTitle());
+        taskProjectDto.setTaskOwnerId(task.getOwnerId());
+
+        taskRepository.deleteById(id);
         TaskEventDto eventDto = new TaskEventDto("TASK_DELETED", taskProjectDto);
         kafkaTemplate.send("task-events", task.getId(), eventDto);
         return "Task delete successful";

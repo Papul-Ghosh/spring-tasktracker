@@ -1,20 +1,24 @@
 package com.example.projectservice.dto;
 
-import com.example.projectservice.model.Role;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserDto {
+public class ProjectNotificationDto {
 
-    private Long id;
+    private String fullName;
     private String email;
-    private String firstname;
-    private String lastname;
-    private Role role;
+
+    private Long projectId;
+    private String projectName;
+
+    private String TaskId;
+    private String TaskName;
+    private String TaskOwnerFullName;
 }

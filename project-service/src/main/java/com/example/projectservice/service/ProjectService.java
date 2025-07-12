@@ -29,11 +29,11 @@ public class ProjectService {
     private final UserClient userClient;
     private final TaskClient taskClient;
     private final ProjectRepository projectRepository;
-    KafkaTemplate<String, String> kafkaTemplate;
+    KafkaTemplate<String, ProjectEventDto> kafkaTemplate;
 
     public ProjectService(ProjectRepository projectRepository,
                           UserClient userClient, TaskClient taskClient,
-                          KafkaTemplate<String, String> kafkaTemplate) {
+                          KafkaTemplate<String, ProjectEventDto> kafkaTemplate) {
         this.projectRepository = projectRepository;
         this.userClient = userClient;
         this.taskClient = taskClient;
@@ -108,7 +108,10 @@ public class ProjectService {
         taskList.add(taskProjectDto.getTaskId());
         project.setTaskIds(taskList);
         projectRepository.save(project);
-        kafkaTemplate.send(notificationTopic, "Task created into project");
+
+        ProjectEventDto projectEventDto = SendTaskNotification(taskProjectDto, "TASK_CREATED");
+        kafkaTemplate.send(notificationTopic, String.valueOf(project.getId()), projectEventDto);
+
     }
 
     public void removeTask(TaskProjectDto taskProjectDto){
@@ -118,7 +121,25 @@ public class ProjectService {
         taskList.remove(taskProjectDto.getTaskId());
         project.setTaskIds(taskList);
         projectRepository.save(project);
-        kafkaTemplate.send(notificationTopic, "Task deleted from project");
+        ProjectEventDto projectEventDto = SendTaskNotification(taskProjectDto, "TASK_DELETED");
+        kafkaTemplate.send(notificationTopic, String.valueOf(project.getId()), projectEventDto);
+    }
+
+    private ProjectEventDto SendTaskNotification(TaskProjectDto taskProjectDto, String msg) {
+        Project project = getProjectById(taskProjectDto.getProjectId());
+        UserDto projectOwner = userClient.getUserById(project.getOwnerid());
+        UserDto newTaskOwner = userClient.getUserById(taskProjectDto.getTaskOwnerId());
+
+        ProjectNotificationDto projectNotificationDto = new ProjectNotificationDto();
+        projectNotificationDto.setEmail(projectOwner.getEmail());
+        projectNotificationDto.setFullName(projectOwner.getFirstname() + " " + projectOwner.getLastname());
+        projectNotificationDto.setProjectId(project.getId());
+        projectNotificationDto.setProjectName(project.getName());
+        projectNotificationDto.setTaskId(taskProjectDto.getTaskId());
+        projectNotificationDto.setTaskName(taskProjectDto.getTaskTitle());
+        projectNotificationDto.setTaskOwnerFullName(newTaskOwner.getFirstname() + " " + newTaskOwner.getLastname());
+        ProjectEventDto projectEventDto = new ProjectEventDto(msg, projectNotificationDto);
+        return projectEventDto;
     }
 
     @KafkaListener(topics = "#{'${app.kafka.task-topic}'}", groupId = "project-service", containerFactory = "taskProjectListener")

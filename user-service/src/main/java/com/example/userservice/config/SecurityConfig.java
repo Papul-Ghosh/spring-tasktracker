@@ -49,6 +49,7 @@ public class SecurityConfig {
                                         "/v1/users/activeUser/**",
                                         "/v1/users/activeUserId/**",
                                         "/v1/users/existsUserId/**",
+                                        "/v1/users/**",
                                         "/swagger-ui/**")
                                 .permitAll()
                                 .requestMatchers("/v1/users/admin_only/**").hasAuthority("ADMIN")

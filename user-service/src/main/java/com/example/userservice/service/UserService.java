@@ -2,6 +2,7 @@ package com.example.userservice.service;
 
 import com.example.userservice.dto.LoginDto;
 import com.example.userservice.dto.SignupDto;
+import com.example.userservice.exception.UserNotFoundException;
 import com.example.userservice.model.AuthenticationResponse;
 import com.example.userservice.model.Role;
 import com.example.userservice.model.Token;
@@ -133,6 +134,12 @@ public class UserService {
     public boolean existsUserId(Long id){
         return userRepository.existsById(id);
     }
+
+    public SignupDto getUserById(Long id){
+            User user = userRepository.findById(id)
+                    .orElseThrow(() -> new UserNotFoundException("User not found with id: " + id));
+            return mapToUserDto(user);
+        }
 
 
 

@@ -1,20 +1,17 @@
 package com.example.projectservice.dto;
 
-import com.example.projectservice.model.Role;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserDto {
+public class ProjectEventDto {
 
-    private Long id;
-    private String email;
-    private String firstname;
-    private String lastname;
-    private Role role;
+    private String eventType;
+    private ProjectNotificationDto projectNotificationDto;
 }

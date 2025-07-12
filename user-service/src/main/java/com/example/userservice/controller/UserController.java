@@ -69,4 +69,15 @@ public class UserController {
         }
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getUserById(@PathVariable Long id) {
+        try {
+            SignupDto userDto = userService.getUserById(id);
+
+            return ResponseEntity.status(HttpStatus.OK).body(userDto);
+        } catch (ResponseStatusException ex) {
+            return ResponseEntity.status(ex.getStatusCode()).body(ex.getMessage());
+        }
+    }
+
 }

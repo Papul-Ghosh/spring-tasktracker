@@ -1,5 +1,6 @@
 package com.example.projectservice.config;
 
+import com.example.projectservice.dto.ProjectEventDto;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,7 +21,7 @@ public class KafkaProducerConfig {
     private String kafkaPort;
 
     @Bean
-    public ProducerFactory<String, String> producerFactory() {
+    public ProducerFactory<String, ProjectEventDto> producerFactory() {
         Map<String, Object> configProps = new HashMap<>();
         configProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaPort);
         configProps.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
@@ -29,7 +30,7 @@ public class KafkaProducerConfig {
     }
 
     @Bean
-    public KafkaTemplate<String, String> notificationProjectSender() {
+    public KafkaTemplate<String, ProjectEventDto> notificationProjectSender() {
         return new KafkaTemplate<>(producerFactory());
     }
 }

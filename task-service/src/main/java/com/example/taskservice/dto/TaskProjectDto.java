@@ -16,5 +16,7 @@ public class TaskProjectDto {
 
     @NotEmpty(message = "task id cannot be empty")
     private String taskId;
+    private String TaskTitle;
+    private Long taskOwnerId;
 
 }
