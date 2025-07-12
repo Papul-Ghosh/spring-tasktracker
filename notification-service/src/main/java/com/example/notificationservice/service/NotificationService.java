@@ -1,6 +1,7 @@
 package com.example.notificationservice.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -15,30 +16,19 @@ public class NotificationService {
 //        this.userClient = userClient;
     }
 
-//    public Comment createComment(CommentDto commentDto, Long userId) {
-//
-//        Comment comment = new Comment();
-//        comment.setAuthorId(userId);
-//        comment.setTaskId(commentDto.getTaskId());
-//        comment.setContent(commentDto.getContent());
-//        comment.setCreatedAt(LocalDateTime.now());
-//        Long count = commentRepository.countByTaskId(commentDto.getTaskId());
-//        String commentId = commentDto.getTaskId() + '_' + String.valueOf(count);
-//        comment.setId(commentId);
-//        commentRepository.save(comment);
-//        return comment;
-//    }
-//
+
+    @KafkaListener(topics = "#{'${app.kafka.notification-topic}'}", groupId = "notification-service", containerFactory = "notificationProjectListener")
+    public void handleProjectEvents(String str) {
+//        switch (eventDto.getEventType()) {
+//            case "TASK_CREATED" -> syncNewTask(eventDto.getTaskProjectDto());
+//            case "TASK_DELETED" -> removeTask(eventDto.getTaskProjectDto());
+//        }
+        System.out.println(str);
+    }
+
+
 //    public Long getActiveUserId() {
 //        return userClient.getUserIdFromUserService();
 //    }
 //
-//    public Comment getCommentById(String id) {
-//        return commentRepository.findById(id)
-//                .orElseThrow(() -> new CommentNotFoundException("Comment not found with id: " + id));
-//    }
-//
-//    public List<Comment> getCommentsByTaskId(String taskId) {
-//        return commentRepository.findCommentsByTaskIdOrderByTimeDesc(taskId);
-//    }
 }

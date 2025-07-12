@@ -7,8 +7,11 @@ import com.example.projectservice.exception.ProjectNotFoundException;
 import com.example.projectservice.model.Project;
 import com.example.projectservice.model.Role;
 import com.example.projectservice.repository.ProjectRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -19,16 +22,22 @@ import java.util.List;
 
 @Service
 public class ProjectService {
+    @Value("${app.kafka.notification-topic}")
+    private String notificationTopic;
 
-    private final ProjectRepository projectRepository;
+    @Autowired
     private final UserClient userClient;
     private final TaskClient taskClient;
+    private final ProjectRepository projectRepository;
+    KafkaTemplate<String, String> kafkaTemplate;
 
     public ProjectService(ProjectRepository projectRepository,
-                          UserClient userClient, TaskClient taskClient) {
+                          UserClient userClient, TaskClient taskClient,
+                          KafkaTemplate<String, String> kafkaTemplate) {
         this.projectRepository = projectRepository;
         this.userClient = userClient;
         this.taskClient = taskClient;
+        this.kafkaTemplate = kafkaTemplate;
     }
 
 
@@ -99,6 +108,7 @@ public class ProjectService {
         taskList.add(taskProjectDto.getTaskId());
         project.setTaskIds(taskList);
         projectRepository.save(project);
+        kafkaTemplate.send(notificationTopic, "Task created into project");
     }
 
     public void removeTask(TaskProjectDto taskProjectDto){
@@ -108,6 +118,7 @@ public class ProjectService {
         taskList.remove(taskProjectDto.getTaskId());
         project.setTaskIds(taskList);
         projectRepository.save(project);
+        kafkaTemplate.send(notificationTopic, "Task deleted from project");
     }
 
     @KafkaListener(topics = "#{'${app.kafka.task-topic}'}", groupId = "project-service", containerFactory = "taskProjectListener")
