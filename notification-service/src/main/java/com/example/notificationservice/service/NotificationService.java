@@ -1,6 +1,8 @@
 package com.example.notificationservice.service;
 
 import com.example.notificationservice.dto.ProjectEventDto;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -44,13 +46,22 @@ public class NotificationService {
 
 
     @KafkaListener(topics = "#{'${app.kafka.notification-topic}'}", groupId = "notification-service", containerFactory = "notificationProjectListener")
-    public void handleProjectEvents(ProjectEventDto projectEventDto) {
-//        switch (eventDto.getEventType()) {
-//            case "TASK_CREATED" -> syncNewTask(eventDto.getTaskProjectDto());
-//            case "TASK_DELETED" -> removeTask(eventDto.getTaskProjectDto());
-//        }
-        sendEmail(projectEventDto.getProjectNotificationDto().getEmail(),
-                "SAMPLE HEADER",
-                "SAMPLE MESSAGE");
+    public void handleProjectEvents(ProjectEventDto projectEventDto) throws JsonProcessingException {
+        String header = "";
+        String body = "";
+        ObjectMapper mapper = new ObjectMapper();
+        String content = mapper.writeValueAsString(projectEventDto.getProjectNotificationDto());
+
+        switch (projectEventDto.getEventType()) {
+            case "TASK_CREATED":
+                header = "Task " + projectEventDto.getProjectNotificationDto().getTaskId() + " Created to Project: " + projectEventDto.getProjectNotificationDto().getProjectId();
+                body = "A New Task has been created to Project: " + projectEventDto.getProjectNotificationDto().getProjectId();
+                body = body + "\n" + "Details: " + "\n" + content;
+            case "TASK_DELETED":
+                header = "Task " + projectEventDto.getProjectNotificationDto().getTaskId() + " Deleted from Project: " + projectEventDto.getProjectNotificationDto().getProjectId();
+                body = "Task has been deleted to Project: " + projectEventDto.getProjectNotificationDto().getProjectId();
+                body = body + "\n" + "Details: " + "\n" + content;
+        }
+        sendEmail(projectEventDto.getProjectNotificationDto().getEmail(), header, body);
     }
 }
