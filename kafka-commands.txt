@@ -1,16 +1,23 @@
 go to the kafka directory and open command prompt (eg. C:\kafka)
 
-Required Commands:
 
+start zookeeper:
 .\bin\windows\zookeeper-server-start.bat .\config\zookeeper.properties
 
+start kafka:
 .\bin\windows\kafka-server-start.bat .\config\server.properties
 
-kafka-topics.bat --create --bootstrap-server localhost:9092 --replication-factor 1 --partition 1 --topic test
+create new topic:
+.\bin\windows\kafka-topics.bat --create --topic my-topic-name --bootstrap-server localhost:9092 --partitions 3 --replication-factor 1
 
-kafka-console-producer.bat --broker-list localhost:9092 --topic test
+describe a topic:
+.\bin\windows\kafka-topics.bat --describe --topic your-topic-name --bootstrap-server localhost:9092
 
-kafka-console-consumer.bat --topic test --bootstrap-server localhost:9092 --from-beginning
+send message from publisher:
+.\bin\windows\kafka-console-producer.bat --topic my-topic-name --broker-list localhost:9092
+
+receive message from consumer:
+.\bin\windows\kafka-console-consumer.bat --topic my-topic-name --bootstrap-server localhost:9092 --from-beginning
 
 -------------------------------------------------------------------------------------------------------
 Sample Data:

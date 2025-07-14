@@ -5,6 +5,8 @@ import com.example.userservice.dto.SignupDto;
 import com.example.userservice.model.AuthenticationResponse;
 import com.example.userservice.model.User;
 import com.example.userservice.service.UserService;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -28,6 +30,7 @@ public class UserController {
     }
 
     @PostMapping("/signup")
+    @CachePut(value = "UserCache", key = "#result.id")
     public ResponseEntity<AuthenticationResponse> registerUser(@RequestBody SignupDto signupDto) {
 
         return ResponseEntity.ok(userService.registerUser(signupDto));
@@ -61,6 +64,7 @@ public class UserController {
     }
 
     @GetMapping("/existsUserId/{id}")
+    @Cacheable(value = "UserCache", key = "#id")
     public ResponseEntity<?> existsUserId(@PathVariable Long id) {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(userService.existsUserId(id));
@@ -70,6 +74,7 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
+    @Cacheable(value = "UserCache", key = "#id")
     public ResponseEntity<?> getUserById(@PathVariable Long id) {
         try {
             SignupDto userDto = userService.getUserById(id);
